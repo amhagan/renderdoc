@@ -3595,6 +3595,9 @@ void WrappedID3D11Device::ReleaseResource(ID3D11DeviceChild *res)
 
   ResourceType type = IdentifyTypeByPtr(res);
 
+  if(type == Resource_Shader)
+    RDCLOG("Releasing shader %llu", idx);
+
   D3D11ResourceRecord *record = m_DeviceRecord;
 
   if(m_State == WRITING_IDLE)

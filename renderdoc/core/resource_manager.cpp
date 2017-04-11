@@ -69,6 +69,9 @@ void ResourceRecord::Delete(ResourceRecordHandler *mgr)
   RDCASSERT(ref >= 0);
   if(ref <= 0)
   {
+    if(type == Resource_Shader)
+      RDCLOG("Record %llu self-deleting due to no references", GetResourceID());
+
     for(auto it = Parents.begin(); it != Parents.end(); ++it)
       (*it)->Delete(mgr);
 
