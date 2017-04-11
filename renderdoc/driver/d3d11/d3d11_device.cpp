@@ -3648,7 +3648,11 @@ void WrappedID3D11Device::ReleaseResource(ID3D11DeviceChild *res)
   {
     record = GetResourceManager()->GetResourceRecord(idx);
     if(record)
+    {
+      for(D3D11ResourceRecord *ref : record->cmdlistRefs)
+        ref->Delete(GetResourceManager());
       record->Delete(GetResourceManager());
+    }
   }
 
   if(serialiseRelease)

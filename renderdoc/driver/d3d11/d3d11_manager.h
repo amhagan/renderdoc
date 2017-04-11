@@ -158,6 +158,7 @@ struct D3D11ResourceRecord : public ResourceRecord
 
   int NumSubResources;
   ResourceRecord **SubResources;
+  std::vector<D3D11ResourceRecord *> cmdlistRefs;
 
 private:
   byte *ShadowPtr[32][2];

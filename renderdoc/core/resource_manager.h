@@ -243,7 +243,7 @@ struct ResourceRecord
   bool HasDataPtr() { return DataPtr != NULL; }
   void SetDataOffset(uint64_t offs) { DataOffset = offs; }
   void SetDataPtr(byte *ptr) { DataPtr = ptr; }
-  void MarkResourceFrameReferenced(ResourceId id, FrameRefType refType);
+  bool MarkResourceFrameReferenced(ResourceId id, FrameRefType refType);
   void AddResourceReferences(ResourceRecordHandler *mgr);
   void AddReferencedIDs(std::set<ResourceId> &ids)
   {
@@ -888,7 +888,7 @@ void ResourceManager<WrappedResourceType, RealResourceType, RecordType>::InsertR
   {
     for(auto it = m_FrameReferencedResources.begin(); it != m_FrameReferencedResources.end(); ++it)
     {
-      RDCLOG("Inserting resource record for referenced resource %llu", id->first);
+      RDCLOG("Inserting resource record for referenced resource %llu", it->first);
       RecordType *record = GetResourceRecord(it->first);
       if(record)
         record->Insert(sortedChunks);

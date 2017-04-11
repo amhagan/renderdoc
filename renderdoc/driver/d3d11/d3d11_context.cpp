@@ -370,7 +370,19 @@ void WrappedID3D11DeviceContext::MarkResourceReferenced(ResourceId id, FrameRefT
   {
     RDCLOG("Marking resource %llu referenced on deferred context context", id,
            m_ContextRecord->GetResourceID());
-    m_ContextRecord->MarkResourceFrameReferenced(id, refType);
+    bool newRef = m_ContextRecord->MarkResourceFrameReferenced(id, refType);
+
+    // we need to keep this resource alive so that we can insert its record on capture
+    // if this command list gets executed.
+    if(newRef)
+    {
+      D3D11ResourceRecord *record = m_pDevice->GetResourceManager()->GetResourceRecord(id);
+      if(record)
+      {
+        record->AddRef();
+        m_ContextRecord->cmdlistRefs.push_back(record);
+      }
+    }
   }
 }
 

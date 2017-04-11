@@ -5171,6 +5171,7 @@ HRESULT WrappedID3D11DeviceContext::FinishCommandList(BOOL RestoreDeferredContex
     RDCASSERT(r);
 
     m_ContextRecord->SwapChunks(r);
+    m_ContextRecord->cmdlistRefs.swap(r->cmdlistRefs);
     wrapped->SetDirtyResources(m_DeferredDirty);
 
     // if we're supposed to restore, save the state to restore to now

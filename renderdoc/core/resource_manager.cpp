@@ -47,11 +47,11 @@ void SetReplayResourceIDs()
 }
 };
 
-void ResourceRecord::MarkResourceFrameReferenced(ResourceId id, FrameRefType refType)
+bool ResourceRecord::MarkResourceFrameReferenced(ResourceId id, FrameRefType refType)
 {
   if(id == ResourceId())
-    return;
-  ResourceManager<void *, void *, ResourceRecord>::MarkReferenced(m_FrameRefs, id, refType);
+    return false;
+  return ResourceManager<void *, void *, ResourceRecord>::MarkReferenced(m_FrameRefs, id, refType);
 }
 
 void ResourceRecord::AddResourceReferences(ResourceRecordHandler *mgr)
@@ -69,8 +69,7 @@ void ResourceRecord::Delete(ResourceRecordHandler *mgr)
   RDCASSERT(ref >= 0);
   if(ref <= 0)
   {
-    if(type == Resource_Shader)
-      RDCLOG("Record %llu self-deleting due to no references", GetResourceID());
+    RDCLOG("Record %llu self-deleting due to no references", GetResourceID());
 
     for(auto it = Parents.begin(); it != Parents.end(); ++it)
       (*it)->Delete(mgr);
