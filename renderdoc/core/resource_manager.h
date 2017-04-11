@@ -872,7 +872,7 @@ void ResourceManager<WrappedResourceType, RealResourceType, RecordType>::InsertR
 
   SCOPED_LOCK(m_Lock);
 
-  RDCDEBUG("%u frame resource records", (uint32_t)m_FrameReferencedResources.size());
+  RDCLOG("%u frame resource records", (uint32_t)m_FrameReferencedResources.size());
 
   if(RenderDoc::Inst().GetCaptureOptions().RefAllResources)
   {
@@ -888,20 +888,21 @@ void ResourceManager<WrappedResourceType, RealResourceType, RecordType>::InsertR
   {
     for(auto it = m_FrameReferencedResources.begin(); it != m_FrameReferencedResources.end(); ++it)
     {
+      RDCLOG("Inserting resource record for referenced resource %llu", id->first);
       RecordType *record = GetResourceRecord(it->first);
       if(record)
         record->Insert(sortedChunks);
     }
   }
 
-  RDCDEBUG("%u frame resource chunks", (uint32_t)sortedChunks.size());
+  RDCLOG("%u frame resource chunks", (uint32_t)sortedChunks.size());
 
   for(auto it = sortedChunks.begin(); it != sortedChunks.end(); it++)
   {
     fileSer->Insert(it->second);
   }
 
-  RDCDEBUG("inserted to serialiser");
+  RDCLOG("inserted to serialiser");
 }
 
 template <typename WrappedResourceType, typename RealResourceType, typename RecordType>

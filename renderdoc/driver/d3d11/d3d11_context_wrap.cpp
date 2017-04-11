@@ -2901,6 +2901,11 @@ bool WrappedID3D11DeviceContext::Serialise_PSSetShader(ID3D11PixelShader *pShade
     if(m_pDevice->GetResourceManager()->HasLiveResource(Shader))
       pSH = (ID3D11DeviceChild *)m_pDevice->GetResourceManager()->GetLiveResource(Shader);
 
+    if(pSH == NULL && Shader != ResourceId())
+    {
+      RDCERR("Tried to set PS %llu, but it was NULL!", Shader);
+    }
+
     if(m_State == READING)
       RecordShaderStats(eShaderStage_Pixel, m_CurrentPipelineState->PS.Shader, pSH);
 
@@ -2929,6 +2934,7 @@ void WrappedID3D11DeviceContext::PSSetShader(ID3D11PixelShader *pPixelShader,
     m_pSerialiser->Serialise("context", m_ResourceID);
     Serialise_PSSetShader(pPixelShader, ppClassInstances, NumClassInstances);
 
+    RDCLOG("Marking PS %llu as referenced", GetIDForResource(pPixelShader));
     MarkResourceReferenced(GetIDForResource(pPixelShader), eFrameRef_Read);
 
     m_ContextRecord->AddChunk(scope.Get());
@@ -4883,7 +4889,9 @@ void WrappedID3D11DeviceContext::ExecuteCommandList(ID3D11CommandList *pCommandL
 
       // insert all the deferred chunks immediately following the execute chunk.
       m_ContextRecord->AppendFrom(cmdListRecord);
+      RDCLOG("Adding references from command list %llu on immediate context", contextId);
       cmdListRecord->AddResourceReferences(m_pDevice->GetResourceManager());
+      RDCLOG("Done adding references from command list %llu on immediate context", contextId);
     }
 
     // still update dirty resources for subsequent captures

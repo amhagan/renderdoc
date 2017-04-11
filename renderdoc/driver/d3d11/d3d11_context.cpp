@@ -363,10 +363,13 @@ void WrappedID3D11DeviceContext::MarkResourceReferenced(ResourceId id, FrameRefT
 {
   if(m_pRealContext->GetType() == D3D11_DEVICE_CONTEXT_IMMEDIATE)
   {
+    RDCLOG("Marking resource %llu referenced directly on immediate context", id);
     m_pDevice->GetResourceManager()->MarkResourceFrameReferenced(id, refType);
   }
   else
   {
+    RDCLOG("Marking resource %llu referenced on deferred context context", id,
+           m_ContextRecord->GetResourceID());
     m_ContextRecord->MarkResourceFrameReferenced(id, refType);
   }
 }

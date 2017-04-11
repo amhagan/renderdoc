@@ -58,6 +58,7 @@ void ResourceRecord::AddResourceReferences(ResourceRecordHandler *mgr)
 {
   for(auto it = m_FrameRefs.begin(); it != m_FrameRefs.end(); ++it)
   {
+    RDCLOG("Adding ref to ID %llu in record %llu", it->first, GetResourceID());
     mgr->MarkResourceFrameReferenced(it->first, it->second);
   }
 }
